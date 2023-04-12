@@ -1,10 +1,12 @@
 from django.db import models
 
+
 class Visitor(models.Model):
     name = models.CharField(max_length=255, unique=True)
     address = models.CharField(max_length=255)
     phone = models.BigIntegerField(unique=True)
     email = models.EmailField(unique=True)
+
 
 class Session(models.Model):
     time = models.TimeField()
@@ -25,9 +27,10 @@ class Session(models.Model):
     type = models.IntegerField(choices=ACTIVITIES)
     coach = models.ForeignKey('Coach', related_name='coach', on_delete=models.CASCADE, null=True)
 
+
 class VisitorToSession(models.Model):
     visitor = models.ForeignKey('Visitor', related_name='visitor', on_delete=models.CASCADE)
-    session = models.ForeignKey('Session', related_name='session', on_delete=models.CASCADE)
+    session = models.OneToOneField('Session', related_name='session', on_delete=models.CASCADE)
 
 
 class Coach(models.Model):
@@ -35,7 +38,8 @@ class Coach(models.Model):
     address = models.CharField(max_length=255)
     position = models.CharField(max_length=255)
     phone = models.BigIntegerField(unique=True)
-    passport = models.ForeignKey('Passport', related_name='passport', on_delete=models.CASCADE)
+    passport = models.OneToOneField('Passport', related_name='passport', on_delete=models.CASCADE)
+
 
 class Passport(models.Model):
     series = models.CharField(max_length=2)
