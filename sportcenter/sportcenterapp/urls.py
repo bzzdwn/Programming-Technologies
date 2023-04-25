@@ -21,8 +21,4 @@ urlpatterns = [
     path('create/passport/', PassportCreateView.as_view()),
     path('show/passport/', PassportsListView.as_view()),
     path('details/passport/<int:pk>', PassportDetailView.as_view()),
-    # visitorToSession urls
-    path('create/visitor-to-session/', VisitorToSessionCreateView.as_view()),
-    path('show/visitor-to-session/', VisitorToSessionListView.as_view()),
-    path('details/visitor-to-session/<int:pk>', VisitorToSessionDetailView.as_view()),
 ]

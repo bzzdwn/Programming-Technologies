@@ -26,11 +26,7 @@ class Session(models.Model):
     )
     type = models.IntegerField(choices=ACTIVITIES)
     coach = models.ForeignKey('Coach', related_name='coach', on_delete=models.CASCADE, null=True)
-
-
-class VisitorToSession(models.Model):
-    visitor = models.ForeignKey('Visitor', related_name='visitor', on_delete=models.CASCADE)
-    session = models.OneToOneField('Session', related_name='session', on_delete=models.CASCADE)
+    visitor = models.ManyToManyField(Visitor, related_name='sessions')
 
 
 class Coach(models.Model):

@@ -1,32 +1,32 @@
 from rest_framework import serializers
 from .models import *
 
-
-class VisitorDetailSerializer(serializers.ModelSerializer):
-    # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
-    class Meta:
-        model = Visitor
-        fields = '__all__'
-
-
-class VisitorsListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Visitor
-        fields = ('id', 'name', 'phone', 'email')
-
-
 class SessionDetailSerializer(serializers.ModelSerializer):
+    visitor = serializers.PrimaryKeyRelatedField(queryset=Visitor.objects.all(), many=True)
     class Meta:
         model = Session
         fields = '__all__'
 
 
 class SessionsListSerializer(serializers.ModelSerializer):
+    visitor = serializers.PrimaryKeyRelatedField(queryset=Visitor.objects.all(), many=True)
     class Meta:
         model = Session
-        fields = ('id', 'type', 'time', 'date')
+        fields = ('id', 'visitor', 'type', 'time', 'date')
 
+class VisitorDetailSerializer(serializers.ModelSerializer):
+    # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    session_list = SessionDetailSerializer(many=True, read_only=True)
+    class Meta:
+        model = Visitor
+        fields = '__all__'
+
+
+class VisitorsListSerializer(serializers.ModelSerializer):
+    session_list = SessionDetailSerializer(many=True, read_only=True)
+    class Meta:
+        model = Visitor
+        fields = ('name', 'phone', 'email', 'session_list')
 
 class CoachDetailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,14 +46,4 @@ class PassportDetailSerializer(serializers.ModelSerializer):
 class PassportsListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Passport
-        fields =('series', 'number', 'date', 'given')
-
-class VisitorToSessionDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = VisitorToSession
-        fields ='__all__'
-
-class VisitorToSessionListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = VisitorToSession
         fields =('series', 'number', 'date', 'given')
