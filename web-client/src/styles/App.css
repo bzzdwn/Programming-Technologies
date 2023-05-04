@@ -1,0 +1,66 @@
+.App {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 90vh;
+}
+
+form {
+	width: 300px;
+	padding: 32px;
+	border-radius: 10px;
+	box-shadow: 0 4px 16px #ccc;
+	font-family: sans-serif;
+	letter-spacing: 1px;
+}
+
+div {
+	display: flex;
+	justify-content: center;
+	color: white;
+}
+
+.form_title {
+	text-align: center;
+	margin: 0 0 32px 0;
+	font-weight: normal;
+    color:black
+}
+
+p{
+    color: black;
+}
+
+.form_button {
+	font-family: sans-serif;
+	letter-spacing: 1px;
+	font-size: 16px;
+}
+
+.form_button {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	color: #fff;
+	background-color: #0071f0;
+	outline: none;
+	cursor: pointer;
+	transition: 0.3s;
+	
+}
+
+#logout_button {
+	background-color: #FF0000;
+	
+}
+
+#logout_button:focus, #logout_button:hover {
+	background-color: #FF6347;
+}
+
+.form_button:focus,
+.form_button:hover
+{
+	background-color: rgba(0, 113, 240, 0.7);
+	
+}
