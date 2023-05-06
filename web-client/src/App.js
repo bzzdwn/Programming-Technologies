@@ -7,6 +7,7 @@ import NavigationBar from './components/NavigationBar';
 import {Coaches} from './Coaches'
 import {Home} from './Home'
 import {BrowserRouter as Router, Switch, Route, Link, Routes} from 'react-router-dom';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/coaches" element={<Coaches/>}/>
     </Routes>
     </Router>
+    <Footer/>
     </>
     )
 }

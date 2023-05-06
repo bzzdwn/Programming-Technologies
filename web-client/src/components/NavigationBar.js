@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from "react";
-import { Navbar, Nav, NavLink, Button, Container, Form, Modal, CloseButton } from "react-bootstrap";
+import { Navbar, Nav, NavLink, Button, Container, Form, Modal, CloseButton, Offcanvas } from "react-bootstrap";
 import {Link} from 'react-router-dom';
+import { Profile } from "./Profile";
+import { ProfilePage } from "./ProfilePage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -21,6 +23,12 @@ const client = axios.create({
 
 export default function NavigationBar() {
 
+    const[token, setToken] = useState();
+
+    const [showProfile, setShowProfile] = useState(false);
+    const handleCloseProfile = () => setShowProfile(false);
+    const handleShowProfile = () => setShowProfile(true);
+
     const [login_show, setLoginShow] = useState(false);
     const handleLoginClose = () => setLoginShow(false);
     const handleLoginShow = () => setLoginShow(true);
@@ -29,11 +37,18 @@ export default function NavigationBar() {
     const handleRegisterClose = () => setRegisterShow(false);
     const handleRegisterShow = () => setRegisterShow(true);
 
+    const [confirm_show, setConfirmShow] = useState(false);
+    const handleConfirmClose = () => setConfirmShow(false);
+    const handleConfirmShow = () => setConfirmShow(true);
+
     const [currentUser, setCurrentUser] = useState();
     const [registrationToggle, setRegistrationToggle] = useState(false);
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
+    const [validated, setValidated] = useState(false);
+  
 
   useEffect(() => {
     client.get("/api/auth/users/me/")
@@ -87,16 +102,18 @@ export default function NavigationBar() {
       }
     ).then(function(res) {
       setCurrentUser(true);
+      console.log(res);
+      setToken(res.data.auth_token);
     });
   }
 
   function submitLogout(e) {
-    e.preventDefault();
+    //e.preventDefault();
     client.post(
-      "/api/auth_token/token/logout"
+      "/api/auth_token/token/logout", {withCredentials: true}
     ).then(function(res) {
       setCurrentUser(false);
-    });
+    }); 
   }
   if(currentUser){
     return (
@@ -104,51 +121,65 @@ export default function NavigationBar() {
     <Styles>
         <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
             <Container>   
-                <Navbar.Brand>SportCenter</Navbar.Brand>
+                <Navbar.Brand>Спортивный Центр</Navbar.Brand>
                 <Navbar.Toggle aria-controls='responsive-navbar-nav'></Navbar.Toggle>
                 <Navbar.Collapse id='responsive-navbar-nav'></Navbar.Collapse>
                 <Nav className='me-auto'>
                     <Nav.Item>
-                        <Nav.Link><Link to="/">Home</Link></Nav.Link>
+                        <Nav.Link><Link to="/">Главная</Link></Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link><Link to="/coaches">Coaches</Link></Nav.Link>
+                        <Nav.Link><Link to="/coaches">Список тренеров</Link></Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link>Today Sessions</Nav.Link>
+                        <Nav.Link>Сегодняшние занятия</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link>Мои абонементы</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link onClick={handleShowProfile} className="me-2">Мой профиль</Nav.Link>
                     </Nav.Item>
                 </Nav>
                 <Nav>
                     <Nav.Item>
                         <form onSubmit={e => submitLogout(e)}>
-                        <Button variant="outline-danger" className="me-2" type="submit">Выйти</Button>{' '}
+                        <Button variant="outline-danger" className="me-2" type="submit">Выйти</Button>
                         </form>
                     </Nav.Item>
                 </Nav>
             </Container>
         </Navbar>
     </Styles>
+    <Offcanvas show={showProfile} onHide={handleCloseProfile} variant='dark'>
+      <ProfilePage token={token}/>
+    </Offcanvas>
     </>
     )
   } else {
+
+    function handleClick() {
+      handleRegisterClose();
+      handleConfirmShow();
+    }
 
     return ( 
     <>
     <Styles>
         <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
             <Container>   
-                <Navbar.Brand>SportCenter</Navbar.Brand>
+                <Navbar.Brand>Спортивный Центр</Navbar.Brand>
                 <Navbar.Toggle aria-controls='responsive-navbar-nav'></Navbar.Toggle>
                 <Navbar.Collapse id='responsive-navbar-nav'></Navbar.Collapse>
                 <Nav className='me-auto'>
                     <Nav.Item>
-                        <Nav.Link><Link to="/">Home</Link></Nav.Link>
+                        <Nav.Link><Link to="/">Главная</Link></Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link><Link to="/coaches">Coaches</Link></Nav.Link>
+                        <Nav.Link><Link to="/coaches">Список тренеров</Link></Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link>Today Sessions</Nav.Link>
+                        <Nav.Link>Сегодняшние занятия</Nav.Link>
                     </Nav.Item>
                 </Nav>
                 <Nav>
@@ -181,29 +212,42 @@ export default function NavigationBar() {
             </Form>
         </Modal.Body>
     </Modal>
-    <Modal show={register_show} onHide={handleRegisterClose}>
+    <Modal show={register_show} validated={validated} onHide={handleRegisterClose}>
         <Modal.Header closeButton>
             <Modal.Title>Регистрация</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Form>
-                <Form.Group className="me-2" controlId="formBasicName">
-                    <Form.Label>
-                        ФИО
-                    </Form.Label>
-                    <Form.Control type="text" placeholder="Введите ФИО"/>
-                </Form.Group>
-                <Form.Group className="me-2" controlId="formBasicEmail">
+                <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>
                         Email
                     </Form.Label>
-                    <Form.Control type="email" placeholder="Введите email"/>
+                    <Form.Control required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Введите email"/>
                 </Form.Group>
-                <Form.Group className="me-2" controlId="formBasicPassword">
-                    <Form.Label>
-                        Пароль
-                    </Form.Label>
-                    <Form.Control type="password" placeholder="Введите пароль"/>
+                <Form.Group className="mb-3" controlId="formBasicUsername">
+                    <Form.Label>Логин</Form.Label>
+                    <Form.Control required type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Введите логин"/>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                    <Form.Label>Пароль</Form.Label>
+                    <Form.Control required type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Введите пароль"/>
+                </Form.Group>
+                <br/>
+                <Form.Group>
+                    <Button variant="primary" onClick={handleClick}>Далее</Button>
+                </Form.Group>
+            </Form>
+        </Modal.Body>
+    </Modal>
+    <Modal show={confirm_show} onHide={handleConfirmClose}>
+        <Modal.Header closeButton>
+            <Modal.Title>Подтверждение</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <Form>
+                <Form.Group className="mb-3" controlId="formBasicUsername">
+                    <Form.Label>Код подтверждения</Form.Label>
+                    <Form.Control type="text" value={username} placeholder="Введите код подтверждения"/>
                 </Form.Group>
                 <br/>
                 <Form.Group>

@@ -56,7 +56,7 @@ class CoachCreateView(generics.CreateAPIView):
 class CoachesListView(generics.ListAPIView):
     serializer_class = CoachesListSerializer
     queryset = Coach.objects.all()
-    permission_classes = (IsAuthenticated, )
+    # permission_classes = (IsAuthenticated, )
 
 
 class CoachDetailView(generics.RetrieveUpdateDestroyAPIView):
