@@ -25,8 +25,21 @@ class Session(models.Model):
             (8, 'йога')
     )
     type = models.IntegerField(choices=ACTIVITIES)
-    coach = models.ForeignKey('Coach', related_name='coach', on_delete=models.CASCADE, null=True)
+    coach = models.ForeignKey('Coach', related_name='session_coach', on_delete=models.CASCADE, null=True)
     visitor = models.ManyToManyField(Visitor, related_name='sessions')
+
+class Subscription(models.Model):
+    visitor = models.ManyToManyField(Visitor, related_name='subscriptions')
+    freeze = models.BooleanField(default=False)
+    freeze_days = models.IntegerField(null=True)
+    price = models.IntegerField()
+    buying_date = models.DateField()
+    expiration_date = models.DateField()
+    type = models.CharField(max_length=255)
+    people = models.CharField(max_length=255, null=True)
+    age = models.CharField(max_length=255, null=True)
+    visits = models.CharField(max_length=255, null=True)
+    coach = models.ForeignKey('Coach', related_name='subscription_coach', on_delete=models.CASCADE, null=True)
 
 
 class Coach(models.Model):

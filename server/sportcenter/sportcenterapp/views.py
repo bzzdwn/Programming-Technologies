@@ -14,7 +14,7 @@ user = get_user_model()
 # Visitor
 class VisitorCreateView(generics.CreateAPIView):
     serializer_class = VisitorDetailSerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    # permission_classes = (permissions.IsAuthenticated, )
 
 
 class VisitorsListView(generics.ListAPIView):
@@ -46,10 +46,28 @@ class SessionDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SessionDetailSerializer
     queryset = Session.objects.all()
 
+# Subscription
+class SubscriptionCreateView(generics.CreateAPIView):
+    serializer_class = SubscriptionDetailSerializer
+
+
+class SubscriptionListView(generics.ListAPIView):
+    serializer_class = SubscriptionListSerializer
+    queryset = Subscription.objects.all()
+
+class SubscriptionListOfView(generics.ListAPIView):
+    serializer_class = SubscriptionListSerializer
+    def get_queryset(self):
+        id = self.kwargs['id']
+        return Subscription.objects.filter(visitor=id)
+
+class SubscriptionDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = SubscriptionDetailSerializer
+    queryset = Subscription.objects.all()
 
 # Coach
 class CoachCreateView(generics.CreateAPIView):
-    permission_classes = (IsAdminUser,)
+    # permission_classes = (IsAdminUser,)
     serializer_class = CoachDetailSerializer
 
 
@@ -60,7 +78,7 @@ class CoachesListView(generics.ListAPIView):
 
 
 class CoachDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAdminUser, )
+    # permission_classes = (IsAdminUser, )
     serializer_class = CoachDetailSerializer
     queryset = Coach.objects.all()
 
@@ -68,7 +86,7 @@ class CoachDetailView(generics.RetrieveUpdateDestroyAPIView):
 # Passport
 class PassportCreateView(generics.CreateAPIView):
     serializer_class = PassportDetailSerializer
-    permission_classes = (IsAdminUser,)
+    # permission_classes = (IsAdminUser,)
 
 
 class PassportsListView(generics.ListAPIView):

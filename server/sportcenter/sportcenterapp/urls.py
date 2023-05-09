@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from .views import *
 
 app_name = 'sportcenter'
@@ -21,4 +21,9 @@ urlpatterns = [
     path('create/passport/', PassportCreateView.as_view()),
     path('show/passport/', PassportsListView.as_view()),
     path('details/passport/<int:pk>', PassportDetailView.as_view()),
+    # passport urls
+    path('create/subscription/', SubscriptionCreateView.as_view()),
+    path('show/subscription/', SubscriptionListView.as_view()),
+    path('details/subscription/<int:pk>', SubscriptionDetailView.as_view()),
+    re_path('^subscription/(?P<id>.+)/$', SubscriptionListOfView.as_view()),
 ]

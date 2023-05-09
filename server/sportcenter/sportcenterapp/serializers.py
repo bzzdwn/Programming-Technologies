@@ -14,6 +14,19 @@ class SessionsListSerializer(serializers.ModelSerializer):
         model = Session
         fields = ('id', 'visitor', 'type', 'time', 'date')
 
+class SubscriptionDetailSerializer(serializers.ModelSerializer):
+    visitor = serializers.PrimaryKeyRelatedField(queryset=Visitor.objects.all(), many=True)
+    class Meta:
+        model = Subscription
+        fields = '__all__'
+
+
+class SubscriptionListSerializer(serializers.ModelSerializer):
+    visitor = serializers.PrimaryKeyRelatedField(queryset=Visitor.objects.all(), many=True)
+    class Meta:
+        model = Subscription
+        fields ='__all__'
+
 class VisitorDetailSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     session_list = SessionDetailSerializer(many=True, read_only=True)

@@ -46,12 +46,31 @@ export default function NavigationBar() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [address, setAddress] = useState('');
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    
 
     const [validated, setValidated] = useState(false);
   
+    const [config, setConfig] = useState('');
 
   useEffect(() => {
-    client.get("/api/auth/users/me/")
+      client.get('/api/auth/users/me', config
+      )
+      .then(res => {
+        localStorage.setItem('id', res.data.id);
+      })
+    }, []);
+
+  useEffect(() => {
+    client.get("/api/auth/users/me/"
+    , {
+      headers:{
+        'Authorization': 'Token ' + localStorage.getItem('token')
+    }
+    }
+      )
     .then(function(res) {
       setCurrentUser(true);
     })
@@ -59,16 +78,6 @@ export default function NavigationBar() {
       setCurrentUser(false);
     });
   }, []);
-
-  function update_form_btn() {
-    if (registrationToggle) {
-      document.getElementById("form_btn").innerHTML = "Register";
-      setRegistrationToggle(false);
-    } else {
-      document.getElementById("form_btn").innerHTML = "Log in";
-      setRegistrationToggle(true);
-    }
-  }
 
   function submitRegistration(e) {
     e.preventDefault();
@@ -79,7 +88,16 @@ export default function NavigationBar() {
         username: username,
         password: password
       }
-    ).then(function(res) {
+    ).then(function(res){
+      client.post(
+        "/api/sportcenterapp/create/visitor/",
+        {
+          name: name,
+          address: address,
+          phone: phone,
+          email: email
+        })
+    }).then(function(res) {
       client.post(
         "/api/auth_token/token/login",
         {
@@ -88,6 +106,9 @@ export default function NavigationBar() {
         }
       ).then(function(res) {
         setCurrentUser(true);
+        localStorage.clear();
+      localStorage.setItem('token', res.data.auth_token);
+      setToken(res.data.auth_token);
       });
     });
   }
@@ -102,18 +123,28 @@ export default function NavigationBar() {
       }
     ).then(function(res) {
       setCurrentUser(true);
-      console.log(res);
+      localStorage.clear();
+      localStorage.setItem('token', res.data.auth_token);
       setToken(res.data.auth_token);
+        client.get('/api/auth/users/me', {
+          headers:{
+              'Authorization': 'Token ' + localStorage.getItem('token')
+          }
+      }
+        )
+        .then(res => {
+          localStorage.setItem('id', res.data.id);
+        })
+      
     });
   }
 
+
   function submitLogout(e) {
-    //e.preventDefault();
-    client.post(
-      "/api/auth_token/token/logout", {withCredentials: true}
-    ).then(function(res) {
+    e.preventDefault();
+    console.log(localStorage.getItem('token'));
+      localStorage.clear();
       setCurrentUser(false);
-    }); 
   }
   if(currentUser){
     return (
@@ -126,16 +157,14 @@ export default function NavigationBar() {
                 <Navbar.Collapse id='responsive-navbar-nav'></Navbar.Collapse>
                 <Nav className='me-auto'>
                     <Nav.Item>
-                        <Nav.Link><Link to="/">Главная</Link></Nav.Link>
+                        <Nav.Link href="/">Главная</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link><Link to="/coaches">Список тренеров</Link></Nav.Link>
+                        <Nav.Link href="/coaches">Список тренеров</Nav.Link>
                     </Nav.Item>
+                    <Nav.Item><Nav.Link>Сегодняшние занятия</Nav.Link></Nav.Item>
                     <Nav.Item>
-                        <Nav.Link>Сегодняшние занятия</Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link>Мои абонементы</Nav.Link>
+                        <Nav.Link href="/subscriptions">Мои абонементы</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link onClick={handleShowProfile} className="me-2">Мой профиль</Nav.Link>
@@ -143,16 +172,14 @@ export default function NavigationBar() {
                 </Nav>
                 <Nav>
                     <Nav.Item>
-                        <form onSubmit={e => submitLogout(e)}>
-                        <Button variant="outline-danger" className="me-2" type="submit">Выйти</Button>
-                        </form>
+                        <Button onClick={submitLogout}  variant="outline-danger" className="me-2" type="submit">Выйти</Button>
                     </Nav.Item>
                 </Nav>
             </Container>
         </Navbar>
     </Styles>
-    <Offcanvas show={showProfile} onHide={handleCloseProfile} variant='dark'>
-      <ProfilePage token={token}/>
+    <Offcanvas show={showProfile} onHide={handleCloseProfile}>
+      <ProfilePage token={localStorage.getItem('token')}/>
     </Offcanvas>
     </>
     )
@@ -173,10 +200,10 @@ export default function NavigationBar() {
                 <Navbar.Collapse id='responsive-navbar-nav'></Navbar.Collapse>
                 <Nav className='me-auto'>
                     <Nav.Item>
-                        <Nav.Link><Link to="/">Главная</Link></Nav.Link>
+                        <Nav.Link href="/">Главная</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link><Link to="/coaches">Список тренеров</Link></Nav.Link>
+                        <Nav.Link href="/coaches">Список тренеров</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link>Сегодняшние занятия</Nav.Link>
@@ -217,7 +244,25 @@ export default function NavigationBar() {
             <Modal.Title>Регистрация</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <Form>
+            <Form onSubmit={e => submitRegistration(e)}>
+            <Form.Group className="mb-3" controlId="formBasicName">
+                    <Form.Label>
+                        ФИО
+                    </Form.Label>
+                    <Form.Control required type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Введите ФИО"/>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicAddress">
+                    <Form.Label>
+                        Адрес
+                    </Form.Label>
+                    <Form.Control required type="text" value={address} onChange={e => setAddress(e.target.value)} placeholder="Введите адрес"/>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicPhone">
+                    <Form.Label>
+                        Номер телефона
+                    </Form.Label>
+                    <Form.Control required type="number" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Введите email"/>
+                </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>
                         Email
@@ -234,7 +279,7 @@ export default function NavigationBar() {
                 </Form.Group>
                 <br/>
                 <Form.Group>
-                    <Button variant="primary" onClick={handleClick}>Далее</Button>
+                    <Button variant="primary" type="submit">Зарегистрироваться</Button>
                 </Form.Group>
             </Form>
         </Modal.Body>
