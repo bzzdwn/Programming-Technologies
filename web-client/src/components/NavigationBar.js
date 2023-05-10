@@ -135,7 +135,8 @@ export default function NavigationBar() {
         .then(res => {
           localStorage.setItem('id', res.data.id);
         })
-      
+    }).catch(err => {
+      alert(err.response.data.non_field_errors);
     });
   }
 
@@ -162,7 +163,6 @@ export default function NavigationBar() {
                     <Nav.Item>
                         <Nav.Link href="/coaches">Список тренеров</Nav.Link>
                     </Nav.Item>
-                    <Nav.Item><Nav.Link>Сегодняшние занятия</Nav.Link></Nav.Item>
                     <Nav.Item>
                         <Nav.Link href="/subscriptions">Мои абонементы</Nav.Link>
                     </Nav.Item>
@@ -204,9 +204,6 @@ export default function NavigationBar() {
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link href="/coaches">Список тренеров</Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link>Сегодняшние занятия</Nav.Link>
                     </Nav.Item>
                 </Nav>
                 <Nav>
