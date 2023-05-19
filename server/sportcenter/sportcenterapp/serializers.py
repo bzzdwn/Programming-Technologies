@@ -49,7 +49,7 @@ class CoachDetailSerializer(serializers.ModelSerializer):
 class CoachesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coach
-        fields =('id', 'name', 'position', 'phone')
+        fields =('id', 'name', 'position', 'specialization', 'phone')
 
 class PassportDetailSerializer(serializers.ModelSerializer):
     class Meta:

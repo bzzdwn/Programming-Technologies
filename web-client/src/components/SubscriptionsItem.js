@@ -19,6 +19,7 @@ const SubscriptionsItem = ({cards}) => (
         <SubscriptionItemCoach coach={cards.coach}/>
       </ListGroup>
       <Card.Body>
+        <Card.Link href="#">Выбрать тренера</Card.Link>
         <Card.Link href="#">Заморозить</Card.Link>
         <Card.Link href="#">Продлить</Card.Link>
       </Card.Body>

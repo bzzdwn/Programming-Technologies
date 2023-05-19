@@ -20,7 +20,7 @@ function SubscriptionsList ({id}) {
         .catch(err=> console.log(err))
       }, []);
 
-      if(cards.length == 0){
+      if(cards.length === 0){
             return (<Alert variant="danger">В данный момент у Вас нет абонементов.</Alert>)
       }
       else {

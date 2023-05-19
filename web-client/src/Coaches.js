@@ -25,6 +25,7 @@ export function Coaches () {
                 <th scope="col">#</th>
                 <th scope="col">ФИО тренера</th>
                 <th scope="col">Должность</th>
+                <th scope="col">Специализация</th>
                 <th scope="col"> Номер телефона</th>
             </tr>
         </thead>

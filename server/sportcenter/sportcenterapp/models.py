@@ -46,6 +46,7 @@ class Coach(models.Model):
     name = models.CharField(max_length=255, unique=True)
     address = models.CharField(max_length=255)
     position = models.CharField(max_length=255)
+    specialization = models.CharField(max_length=255)
     phone = models.BigIntegerField(unique=True)
     passport = models.OneToOneField('Passport', related_name='passport', on_delete=models.CASCADE)
 
