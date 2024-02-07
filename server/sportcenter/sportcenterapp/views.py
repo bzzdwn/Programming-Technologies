@@ -20,7 +20,7 @@ class VisitorCreateView(generics.CreateAPIView):
 class VisitorsListView(generics.ListAPIView):
     serializer_class = VisitorsListSerializer
     queryset = Visitor.objects.all()
-    permission_classes = (IsAdminUser,)
+    # permission_classes = (IsAdminUser,)
 
 
 class VisitorDetailView(generics.RetrieveUpdateDestroyAPIView):

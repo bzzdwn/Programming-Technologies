@@ -29,6 +29,7 @@ import ru.bzzdwn.mobile_client.components.RetrofitAPI;
 import ru.bzzdwn.mobile_client.databinding.FragmentSlideshowBinding;
 
 public class SlideshowFragment extends Fragment {
+    final String baseUrl = "http://10.160.15.253:8000/api/";
     private FragmentSlideshowBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -41,7 +42,7 @@ public class SlideshowFragment extends Fragment {
         View contentView = inflater.inflate(R.layout.fragment_slideshow, container, false);
         ListView listView = contentView.findViewById(R.id.listView);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.100.7:8000/api/")
+                .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

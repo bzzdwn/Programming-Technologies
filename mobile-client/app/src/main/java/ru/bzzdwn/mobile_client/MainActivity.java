@@ -23,6 +23,7 @@ import ru.bzzdwn.mobile_client.components.UserInfo;
 import ru.bzzdwn.mobile_client.components.UserRequest;
 
 public class MainActivity extends AppCompatActivity {
+    final String baseUrl = "http://10.160.15.253:8000/api/";
 
     private EditText editUsername, editPassword;
     private Button buttonLog;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void postLogin(String username, String password, Intent intent){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.100.7:8000/api/")
+                .baseUrl("http://10.160.15.253:8000/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<LoginRequest> call, Response<LoginRequest> response) {
                 Toast.makeText(MainActivity.this, "Successfully!", Toast.LENGTH_SHORT).show();
                 LoginRequest responseFromAPI = response.body();
-                UserInfo.token = response.body().getAuth_token();
+                //UserInfo.token = response.body().getAuth_token();
                 startActivity(intent);
             }
 

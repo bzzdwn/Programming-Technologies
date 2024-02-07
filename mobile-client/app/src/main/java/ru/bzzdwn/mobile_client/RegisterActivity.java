@@ -21,6 +21,7 @@ import ru.bzzdwn.mobile_client.components.RetrofitAPI;
 import ru.bzzdwn.mobile_client.components.UserRequest;
 
 public class RegisterActivity extends AppCompatActivity {
+    final String baseUrl = "http://10.160.15.253:8000/api/";
 
     private EditText editFIO, editAddress, editLogin, editEmail, editPassword, editPhone;
     private Button buttonReg;
@@ -74,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void postRegister(String username, String email, String password){
         loading.setVisibility(View.VISIBLE);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.100.7:8000/api/")
+                .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -98,7 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void postCreateUser(String name, String address, String phone, String email){
         loading.setVisibility(View.VISIBLE);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.100.7:8000/api/")
+                .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -121,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void postLogin(String username, String password, Intent intent){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.100.7:8000/api/")
+                .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
